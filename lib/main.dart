@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sensor_recorder/views/recording_view.dart';
 import 'views/main_activity.dart';
 
 void main() {

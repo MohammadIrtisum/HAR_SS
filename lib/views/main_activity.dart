@@ -60,7 +60,6 @@ class MainActivity extends StatelessWidget {
               child: Text(controller.isRecording.value
                   ? 'Stop Recording'
                   : 'Start Recording'),
-
             )),
             const SizedBox(height: 20),
             Expanded(
