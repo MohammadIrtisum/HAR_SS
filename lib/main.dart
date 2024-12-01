@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sensor_recorder/views/logo_animation.dart';
 import 'package:sensor_recorder/views/recording_view.dart';
 import 'views/main_activity.dart';
 
@@ -14,7 +15,7 @@ class HARRecorderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainActivity(),
+      home: LogoAnimation(),
     );
   }
 }

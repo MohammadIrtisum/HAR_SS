@@ -33,8 +33,9 @@ class MainController extends GetxController {
   }
 
   Future<void> checkPermissions() async {
-    if (await Permission.storage.isDenied) {
+    if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
       await Permission.storage.request();
+      await Permission.manageExternalStorage.request();
     }
   }
 
@@ -58,25 +59,25 @@ class MainController extends GetxController {
     // Start streaming sensor data
     accelerometerStream = accelerometerEvents.listen((event) {
       accelerometerData.value = [
-        event.x.toStringAsFixed(2),
-        event.y.toStringAsFixed(2),
-        event.z.toStringAsFixed(2),
+        event.x.toStringAsFixed(7),
+        event.y.toStringAsFixed(7),
+        event.z.toStringAsFixed(7),
       ];
     });
 
     gyroscopeStream = gyroscopeEvents.listen((event) {
       gyroscopeData.value = [
-        event.x.toStringAsFixed(2),
-        event.y.toStringAsFixed(2),
-        event.z.toStringAsFixed(2),
+        event.x.toStringAsFixed(7),
+        event.y.toStringAsFixed(7),
+        event.z.toStringAsFixed(7),
       ];
     });
 
     userAccelerationStream = userAccelerometerEvents.listen((event) {
       linearAccelerationData.value = [
-        event.x.toStringAsFixed(2),
-        event.y.toStringAsFixed(2),
-        event.z.toStringAsFixed(2),
+        event.x.toStringAsFixed(7),
+        event.y.toStringAsFixed(7),
+        event.z.toStringAsFixed(7),
       ];
     });
 
@@ -117,28 +118,41 @@ class MainController extends GetxController {
 
   Future<void> saveDataToCSV() async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = "${directory.path}/sensor_data.csv";
+      // Request storage permissions
+      if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
+        await Permission.storage.request();
+        await Permission.manageExternalStorage.request();
+      }
 
-      // Convert the list to CSV format
+      // Use the public Downloads directory
+      final directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists()) {
+        throw Exception('Downloads directory does not exist');
+      }
+
+      // Create a unique file name
+      final filePath = "${directory.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
+
+      // Convert `recordedData` to CSV format
       String csvData = const ListToCsvConverter().convert(recordedData);
 
+      // Write data to the file
       final file = File(filePath);
       await file.writeAsString(csvData);
 
-      // Notify user of success
-      Get.snackbar('Success', 'Data saved to $filePath');
+      // Notify success
+      Get.snackbar('Success', 'File saved to: $filePath');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to save data: $e');
+      // Notify error
+      Get.snackbar('Error', 'Failed to save file: $e');
     } finally {
-      // Clear the recorded data after saving
+      // Clear data after saving (optional)
       recordedData.clear();
     }
   }
 
   void adjustRefreshRate(String rate) {
     refreshRate.value = rate;
-    // Add logic here if you want to adjust the refresh rate of the sensor data
     print("Refresh rate adjusted to: $rate");
   }
 }
