@@ -59,25 +59,25 @@ class MainController extends GetxController {
     // Start streaming sensor data
     accelerometerStream = accelerometerEvents.listen((event) {
       accelerometerData.value = [
-        event.x.toStringAsFixed(7),
-        event.y.toStringAsFixed(7),
-        event.z.toStringAsFixed(7),
+        event.x.toString(),
+        event.y.toString(),
+        event.z.toString(),
       ];
     });
 
     gyroscopeStream = gyroscopeEvents.listen((event) {
       gyroscopeData.value = [
-        event.x.toStringAsFixed(7),
-        event.y.toStringAsFixed(7),
-        event.z.toStringAsFixed(7),
+        event.x.toString(),
+        event.y.toString(),
+        event.z.toString(),
       ];
     });
 
     userAccelerationStream = userAccelerometerEvents.listen((event) {
       linearAccelerationData.value = [
-        event.x.toStringAsFixed(7),
-        event.y.toStringAsFixed(7),
-        event.z.toStringAsFixed(7),
+        event.x.toString(),
+        event.y.toString(),
+        event.z.toString(),
       ];
     });
 
