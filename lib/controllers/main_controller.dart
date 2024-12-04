@@ -12,6 +12,8 @@ class MainController extends GetxController {
   var selectedLabel = 'Choose label'.obs;
   var refreshRate = 'Normal'.obs;
   var status = 'Idle'.obs;
+  var isPhoneReadyForRecording = false.obs;
+  var missingSensors = <String>[].obs;
 
   // Sensor Data
   var accelerometerData = <String>[].obs;
@@ -30,10 +32,59 @@ class MainController extends GetxController {
   void onInit() {
     super.onInit();
     checkPermissions();
+    checkSensors();
+  }
+
+  Future<void> checkSensors() async {
+    missingSensors.clear();
+
+    // Check Accelerometer
+    bool accelerometerAvailable = await _isSensorAvailable(accelerometerEvents);
+    if (!accelerometerAvailable) missingSensors.add('Accelerometer');
+
+    // Check Gyroscope
+    bool gyroscopeAvailable = await _isSensorAvailable(gyroscopeEvents);
+    if (!gyroscopeAvailable) missingSensors.add('Gyroscope');
+
+    // Check Linear Acceleration
+    bool userAccelerometerAvailable =
+    await _isSensorAvailable(userAccelerometerEvents);
+    if (!userAccelerometerAvailable)
+      missingSensors.add('Linear Acceleration');
+
+    // Update recording readiness
+    isPhoneReadyForRecording.value = missingSensors.isEmpty;
+    if (isPhoneReadyForRecording.value) {
+      Get.snackbar('Success', 'This phone is ready for recording!');
+    } else {
+      Get.snackbar(
+        'Warning',
+        'Missing sensors: ${missingSensors.join(', ')}',
+      );
+    }
+  }
+
+  Future<bool> _isSensorAvailable(Stream<dynamic> sensorStream) async {
+    Completer<bool> completer = Completer();
+    late StreamSubscription subscription;
+
+    try {
+      subscription = sensorStream.listen((event) {
+        if (!completer.isCompleted) completer.complete(true);
+      });
+      await Future.delayed(const Duration(milliseconds: 100));
+    } catch (e) {
+      if (!completer.isCompleted) completer.complete(false);
+    } finally {
+      await subscription.cancel();
+    }
+
+    return completer.future;
   }
 
   Future<void> checkPermissions() async {
-    if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
+    if (await Permission.storage.isDenied ||
+        await Permission.manageExternalStorage.isDenied) {
       await Permission.storage.request();
       await Permission.manageExternalStorage.request();
     }
@@ -50,9 +101,15 @@ class MainController extends GetxController {
 
     // Add headers to the CSV data
     recordedData.add([
-      'acc_x', 'acc_y', 'acc_z',
-      'gyro_x', 'gyro_y', 'gyro_z',
-      'la_x', 'la_y', 'la_z',
+      'acc_x',
+      'acc_y',
+      'acc_z',
+      'gyro_x',
+      'gyro_y',
+      'gyro_z',
+      'la_x',
+      'la_y',
+      'la_z',
       'Activity'
     ]);
 
@@ -118,35 +175,28 @@ class MainController extends GetxController {
 
   Future<void> saveDataToCSV() async {
     try {
-      // Request storage permissions
-      if (await Permission.storage.isDenied || await Permission.manageExternalStorage.isDenied) {
+      if (await Permission.storage.isDenied ||
+          await Permission.manageExternalStorage.isDenied) {
         await Permission.storage.request();
         await Permission.manageExternalStorage.request();
       }
 
-      // Use the public Downloads directory
       final directory = Directory('/storage/emulated/0/Download');
       if (!await directory.exists()) {
         throw Exception('Downloads directory does not exist');
       }
 
-      // Create a unique file name
-      final filePath = "${directory.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
-
-      // Convert `recordedData` to CSV format
+      final filePath =
+          "${directory.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
       String csvData = const ListToCsvConverter().convert(recordedData);
 
-      // Write data to the file
       final file = File(filePath);
       await file.writeAsString(csvData);
 
-      // Notify success
       Get.snackbar('Success', 'File saved to: $filePath');
     } catch (e) {
-      // Notify error
       Get.snackbar('Error', 'Failed to save file: $e');
     } finally {
-      // Clear data after saving (optional)
       recordedData.clear();
     }
   }
