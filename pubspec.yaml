@@ -48,6 +48,7 @@ dependencies:
   open_file: ^3.5.10
   syncfusion_flutter_xlsio: ^27.2.4
   firebase_core: ^3.8.1
+  rive: ^0.13.20
 
 dev_dependencies:
   flutter_test:

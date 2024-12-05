@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:sensor_recorder/views/file_location.dart';
 import 'package:sensor_recorder/views/main_activity.dart';
 import 'package:sensor_recorder/views/sensors_check.dart';
 
@@ -77,7 +78,9 @@ class _AnimatedUIState extends State<AnimatedUI> with SingleTickerProviderStateM
                 SizedBox(height: 20),
                 AnimatedButton(
                   label: "File location",
-                  onTap: () => print("File location tapped"),
+                  onTap: (){
+                    Get.to(FileLocationView());
+                  },
                 ),
               ],
             ),
