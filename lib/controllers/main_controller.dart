@@ -173,33 +173,73 @@ class MainController extends GetxController {
     saveDataToCSV();
   }
 
+  // Future<void> saveDataToCSV() async {
+  //   try {
+  //     if (await Permission.storage.isDenied ||
+  //         await Permission.manageExternalStorage.isDenied) {
+  //       await Permission.storage.request();
+  //       await Permission.manageExternalStorage.request();
+  //     }
+  //
+  //     final directory = Directory('/storage/emulated/0/Download');
+  //     if (!await directory.exists()) {
+  //       throw Exception('Downloads directory does not exist');
+  //     }
+  //
+  //     final filePath =
+  //         "${directory.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
+  //     String csvData = const ListToCsvConverter().convert(recordedData);
+  //
+  //     final file = File(filePath);
+  //     await file.writeAsString(csvData);
+  //
+  //     Get.snackbar('Success', 'File saved to: $filePath');
+  //   } catch (e) {
+  //     Get.snackbar('Error', 'Failed to save file: $e');
+  //   } finally {
+  //     recordedData.clear();
+  //   }
+  // }
+
   Future<void> saveDataToCSV() async {
     try {
+      // Request storage permissions if not already granted
       if (await Permission.storage.isDenied ||
           await Permission.manageExternalStorage.isDenied) {
         await Permission.storage.request();
         await Permission.manageExternalStorage.request();
       }
 
-      final directory = Directory('/storage/emulated/0/Download');
-      if (!await directory.exists()) {
-        throw Exception('Downloads directory does not exist');
+      // Define the path for the app-specific folder in the Downloads directory
+      final appFolder = Directory('/storage/emulated/0/HAR Recorder');
+
+      // Check if the folder exists, if not create it
+      if (!await appFolder.exists()) {
+        await appFolder.create(recursive: true);
       }
 
+      // Define the CSV file path inside the HAR Recorder folder
       final filePath =
-          "${directory.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
+          "${appFolder.path}/sensor_data_${DateTime.now().millisecondsSinceEpoch}.csv";
+
+      // Convert the recorded data to CSV format
       String csvData = const ListToCsvConverter().convert(recordedData);
 
+      // Write the CSV data to the file
       final file = File(filePath);
       await file.writeAsString(csvData);
 
+      // Notify the user of success
       Get.snackbar('Success', 'File saved to: $filePath');
     } catch (e) {
+      // Notify the user of any errors
       Get.snackbar('Error', 'Failed to save file: $e');
     } finally {
+      // Clear recorded data after saving
       recordedData.clear();
     }
   }
+
 
   void adjustRefreshRate(String rate) {
     refreshRate.value = rate;

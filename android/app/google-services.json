@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589094379244",
+    "project_id": "fir-work-6dd9b",
+    "storage_bucket": "fir-work-6dd9b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589094379244:android:8d37db97fba9e2bceccfc9",
+        "android_client_info": {
+          "package_name": "com.example.sensor_recorder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTU0VpwAfl7BkQEygLmgUwbkWSXeDAxpc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
