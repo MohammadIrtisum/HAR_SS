@@ -10,169 +10,111 @@ class AnimatedUI extends StatefulWidget {
   State<AnimatedUI> createState() => _AnimatedUIState();
 }
 
-class _AnimatedUIState extends State<AnimatedUI> with SingleTickerProviderStateMixin {
+class _AnimatedUIState extends State<AnimatedUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: Icon(Icons.menu, color: Colors.white),
-        title: Text("HAR App", style: TextStyle(color: Colors.white)),
+        title: Text(
+          "HAR App",
+          style: GoogleFonts.poppins(color: Colors.white, fontSize: 20),
+        ),
         actions: [
           IconButton(
-            onPressed: () {},
             icon: Icon(Icons.share, color: Colors.white),
+            onPressed: () {},
           ),
           IconButton(
-            onPressed: () {},
             icon: Icon(Icons.copy, color: Colors.white),
-          ),
-          IconButton(
             onPressed: () {},
-            icon: Icon(Icons.edit, color: Colors.white),
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          // Background dots
-          Container(
-            color: Colors.grey[200],
-          ),
-          // Circular Profile Icon
-          Positioned(
-            top: 20,
-            right: 20,
-            child: CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.lightBlue,
-              child: Text(
-                "AI",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
+      body: Container(
+        width: double.infinity,
+        color: Colors.grey[100],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildGradientButton(
+              label: "Human Activities Recorder",
+              icon: Icons.run_circle,
+              onTap: () => Get.to(MainActivity()),
             ),
-          ),
-          // Centered Buttons
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedButton(
-                  label: "Human Activities Recorder",
-                  onTap: () {
-                    Get.to(MainActivity());
-                  },
-                ),
-                SizedBox(height: 20),
-                AnimatedButton(
-                  label: "Sensors Check",
-                  onTap: (){
-                    Get.to(SensorsCheck());
-                  }
-                ),
-                SizedBox(height: 20),
-                AnimatedButton(
-                  label: "Saved Activities",
-                  onTap: () => print("Saved Activities tapped"),
-                ),
-                SizedBox(height: 20),
-                AnimatedButton(
-                  label: "File location",
-                  onTap: (){
-                    Get.to(FileLocationView());
-                  },
-                ),
-              ],
+            SizedBox(height: 20),
+            _buildGradientButton(
+              label: "Sensors Check",
+              icon: Icons.sensors,
+              onTap: () => Get.to(SensorsCheck()),
             ),
-          ),
-        ],
+            SizedBox(height: 20),
+            _buildGradientButton(
+              label: "Saved Activities",
+              icon: Icons.save,
+              onTap: () => Get.snackbar('Sorry!!!', 'This feature will be add soon...'),
+            ),
+            SizedBox(height: 20),
+            _buildGradientButton(
+              label: "File Location",
+              icon: Icons.folder,
+              onTap: () => Get.to(FileLocationView()),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.lightBlue,
-        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.lightBlueAccent,
+        unselectedItemColor: Colors.white54,
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.navigation),
-            label: 'Navigation',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.text_snippet),
-            label: 'Text',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.copy),
-            label: 'Copy',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_align_left),
-            label: 'Format',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.image),
-            label: 'Image',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
         ],
       ),
     );
   }
-}
 
-class AnimatedButton extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const AnimatedButton({required this.label, required this.onTap});
-
-  @override
-  _AnimatedButtonState createState() => _AnimatedButtonState();
-}
-
-class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 200),
-      lowerBound: 0.9,
-      upperBound: 1.0,
-    );
-    _scaleAnimation = _controller.drive(CurveTween(curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildGradientButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
-      onTapDown: (_) => _controller.reverse(),
-      onTapUp: (_) {
-        _controller.forward();
-        widget.onTap();
-      },
-      onTapCancel: () => _controller.forward(),
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-          decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8, // 80% screen width
+        height: 70,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.lightBlueAccent, Colors.blue],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: Text(
-            widget.label,
-            style: GoogleFonts.roboto(
-              textStyle: TextStyle(color: Colors.white, fontSize: 18),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blueAccent.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 5),
             ),
-          ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 30),
+            SizedBox(width: 10),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );

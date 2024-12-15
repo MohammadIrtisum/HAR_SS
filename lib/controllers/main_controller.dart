@@ -39,16 +39,16 @@ class MainController extends GetxController {
     missingSensors.clear();
 
     // Check Accelerometer
-    bool accelerometerAvailable = await _isSensorAvailable(accelerometerEvents);
+    bool accelerometerAvailable = await _isSensorAvailable(accelerometerEventStream());
     if (!accelerometerAvailable) missingSensors.add('Accelerometer');
 
     // Check Gyroscope
-    bool gyroscopeAvailable = await _isSensorAvailable(gyroscopeEvents);
+    bool gyroscopeAvailable = await _isSensorAvailable(gyroscopeEventStream());
     if (!gyroscopeAvailable) missingSensors.add('Gyroscope');
 
     // Check Linear Acceleration
     bool userAccelerometerAvailable =
-    await _isSensorAvailable(userAccelerometerEvents);
+    await _isSensorAvailable(userAccelerometerEventStream());
     if (!userAccelerometerAvailable)
       missingSensors.add('Linear Acceleration');
 
@@ -114,7 +114,7 @@ class MainController extends GetxController {
     ]);
 
     // Start streaming sensor data
-    accelerometerStream = accelerometerEvents.listen((event) {
+    accelerometerStream = accelerometerEventStream().listen((event) {
       accelerometerData.value = [
         event.x.toString(),
         event.y.toString(),
@@ -122,7 +122,7 @@ class MainController extends GetxController {
       ];
     });
 
-    gyroscopeStream = gyroscopeEvents.listen((event) {
+    gyroscopeStream = gyroscopeEventStream().listen((event) {
       gyroscopeData.value = [
         event.x.toString(),
         event.y.toString(),
@@ -130,7 +130,7 @@ class MainController extends GetxController {
       ];
     });
 
-    userAccelerationStream = userAccelerometerEvents.listen((event) {
+    userAccelerationStream = userAccelerometerEventStream().listen((event) {
       linearAccelerationData.value = [
         event.x.toString(),
         event.y.toString(),

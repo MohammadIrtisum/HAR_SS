@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FileLocationController extends GetxController {
   var files = <String>[].obs;
@@ -14,19 +14,37 @@ class FileLocationController extends GetxController {
 
   Future<void> fetchFiles() async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final folderPath = '${directory.path}/HAR Recorder';
-      final folder = Directory(folderPath);
+      // Check permissions
+      if (!await Permission.storage.isGranted) {
+        await Permission.storage.request();
+        if (!await Permission.storage.isGranted) {
+          files.value = ['Storage permission denied.'];
+          return;
+        }
+      }
 
-      if (!await folder.exists()) {
+      // Folder path
+      final appFolder = Directory('/storage/emulated/0/HAR Recorder');
+      print("Fetching files from: ${appFolder.path}");
+
+      if (!await appFolder.exists()) {
+        print("Folder does not exist.");
         files.value = ['No files found.'];
         return;
       }
 
-      final fileList = folder.listSync().whereType<File>().toList();
-      files.value = fileList.map((file) => file.path).toList(); // Store full paths
+      // Fetch files
+      final fileList = appFolder.listSync().whereType<File>().toList();
+      if (fileList.isEmpty) {
+        files.value = ['No files found.'];
+      } else {
+        files.value = fileList.map((file) => file.path).toList();
+      }
+
+      print("Files found: ${files.value}");
     } catch (e) {
       files.value = ['Error: Unable to fetch files.'];
+      print("Error fetching files: $e");
     }
   }
 
@@ -38,6 +56,21 @@ class FileLocationController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to open file: $e');
+    }
+  }
+  Future<void> deleteFile(String filePath) async {
+    try {
+      // Check if the file exists
+      final file = File(filePath);
+      if (await file.exists()) {
+        await file.delete(); // Delete the file
+        files.remove(filePath); // Remove the file path from the list
+        Get.snackbar('Success', 'File deleted successfully!');
+      } else {
+        Get.snackbar('Error', 'File does not exist.');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete file: $e');
     }
   }
 }

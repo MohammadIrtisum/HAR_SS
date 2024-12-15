@@ -41,6 +41,7 @@ class MainActivity extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: DropdownButton<String>(
                     isExpanded: true,
+                    underline: SizedBox(),
                     value: controller.selectedLabel.value,
                     items: ['Choose label', ...controller.labels]
                         .map(
@@ -65,6 +66,7 @@ class MainActivity extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: DropdownButton<String>(
                     isExpanded: true,
+                    underline: SizedBox(),
                     value: controller.refreshRate.value,
                     items: ['Normal', 'Fast', 'Fastest']
                         .map(
