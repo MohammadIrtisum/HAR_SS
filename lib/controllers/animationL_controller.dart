@@ -34,7 +34,7 @@ class LogoAnimationController extends GetxController {
   }
 
   void _startAnimationTimer() {
-    timer = Timer(const Duration(seconds: 1), () {
+    timer = Timer(const Duration(seconds: 3), () {
       shouldAnimate.value = true;
       shouldShowText.value = true;
     });
