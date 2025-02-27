@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../views/file_location.dart';

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../models/logo_animation_viewmodel.dart';
 
-
 class LogoAnimationView extends StatelessWidget {
   const LogoAnimationView({super.key});
 

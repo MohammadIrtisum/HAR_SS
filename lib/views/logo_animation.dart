@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sensor_recorder/views/animated_ul.dart';
 import '../controllers/animationL_controller.dart';
-
 
 
 class LogoAnimation extends StatelessWidget {
