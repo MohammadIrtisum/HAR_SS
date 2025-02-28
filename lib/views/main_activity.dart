@@ -10,7 +10,7 @@ class MainActivity extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HAR  Recorder'),
+        title: const Text('HAR  Recorder '),
         backgroundColor: Colors.teal,
         actions: [
           IconButton(

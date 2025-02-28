@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:csv/csv.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
