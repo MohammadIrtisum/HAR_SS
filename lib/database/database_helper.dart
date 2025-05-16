@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-
 class DatabaseHelper {
   static Database? _database;
 
@@ -32,7 +31,7 @@ class DatabaseHelper {
     await db.insert(
       'labels',
       {'name': name},
-      conflictAlgorithm: ConflictAlgorithm.ignore, // Prevent duplicates
+      conflictAlgorithm: ConflictAlgorithm.ignore, // Prevents duplicates
     );
   }
 

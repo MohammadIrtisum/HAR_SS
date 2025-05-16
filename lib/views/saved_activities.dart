@@ -50,7 +50,7 @@ class SavedActivitiesView extends StatelessWidget {
               () => ListView.builder(
                 itemCount: controller.labels.length,
                 itemBuilder: (context, index) {
-                  final label = controller.labels[index]; // label is now a Map
+                  final label = controller.labels[index];
 
                   return AnimatedCard(
                     child: ListTile(
@@ -64,7 +64,7 @@ class SavedActivitiesView extends StatelessWidget {
                       trailing: IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
-                          controller.deleteLabel(label['id']); // Delete from DB
+                          controller.deleteLabel(label['id']);
                         },
                       ),
                     ),

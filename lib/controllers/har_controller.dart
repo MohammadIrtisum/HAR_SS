@@ -10,7 +10,7 @@ class HARController extends GetxController {
   var selectedLabel = 'Choose label'.obs;
   var accelerometerData = <String>[].obs;
   var gyroscopeData = <String>[].obs;
-  var labels = <Map<String, dynamic>>[].obs; // List of maps [{id: 1, name: 'Running'}]
+  var labels = <Map<String, dynamic>>[].obs; // Store as a list of maps
   var status = 'Idle'.obs;
   final DatabaseHelper dbHelper = DatabaseHelper();
 
@@ -37,12 +37,12 @@ class HARController extends GetxController {
 
   void addLabel(String labelName) async {
     await dbHelper.insertLabel(labelName);
-    loadLabels(); // Refresh list
+    loadLabels(); // Refresh UI
   }
 
   void deleteLabel(int id) async {
     await dbHelper.deleteLabel(id);
-    loadLabels(); // Refresh list
+    loadLabels(); // Refresh UI
   }
 
   void startRecording() {
